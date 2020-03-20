@@ -11,6 +11,8 @@ import pandas as pd
 import xlsxwriter
 from openpyxl import load_workbook
 import re
+import time
+
 counter=0
 while True:
     data=['ASIAN PAINTS','AXIS BANK','BAJAJ AUTO','BAJAJ FINANCE','BHARTI AIRTEL','HCL TECHNOLOGIES','HDFC','HDFC BANK','HERO MOTOCORP','HUL','ICICI BANK','INDUSIND BANK','INFOSYS','ITC','KOTAK MAHINDRA BANK','LART','MAHM','MARUTI SUZUKI','NESTLE','NTPC','ONGC','POWER GRID','RELIANCE IND.','SBI','SUN PHARMA','TATA STEEL','TCS','TECH MAHINDRA','TITAN','ULTRATECH CEMENT']
@@ -78,8 +80,8 @@ while True:
     
     counter=counter+1
     
-    time.sleep(1)
-    if(counter==4):
+    time.sleep(300)
+    if(counter==5):
         break    
     
 df2=pd.read_excel('result.xlsx', sheet_name='Sheet1')
