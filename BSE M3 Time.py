@@ -80,6 +80,7 @@ while True:
     
 df2=pd.read_excel('result.xlsx', sheet_name='Sheet1')
 df2=df2.sort_values(by='Stock Name')
+
 print(df2)
 writer1 = pd.ExcelWriter('Final.xlsx', engine='openpyxl')
 df2.to_excel(writer1, sheet_name='Sheet1')
@@ -117,6 +118,7 @@ df3['Date'] = pd.to_datetime(df3['Date'], format='%Y-%m-%d')
 df3['Date'] = df3['Date'].dt.date
 #df3['Time']= pd.to_datetime(data['Time'])
 df3.drop(['Date and Time'], axis = 1, inplace = True)
+df3=df3.sort_values(by=['Stock Name', 'Time'])
 writer2 = pd.ExcelWriter('Final1.xlsx', engine='openpyxl')
 df3.to_excel(writer2, sheet_name='Sheet1')
 worksheet = writer2.sheets['Sheet1']
