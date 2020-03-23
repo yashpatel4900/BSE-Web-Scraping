@@ -74,13 +74,12 @@ while True:
     
     counter=counter+1
     
-    time.sleep(120)
-    if(counter==3):
+    time.sleep(1)
+    if(counter==1):
         break    
     
 df2=pd.read_excel('result.xlsx', sheet_name='Sheet1')
 df2=df2.sort_values(by='Stock Name')
-
 print(df2)
 writer1 = pd.ExcelWriter('Final.xlsx', engine='openpyxl')
 df2.to_excel(writer1, sheet_name='Sheet1')
@@ -108,6 +107,10 @@ for a in time_listNew:
     time_object = datetime.strptime(a, '%I:%M:%S %p').time()
     time_listNew1.append(time_object)
     
+    
+
+
+
 data6=pd.DataFrame(date_listNew1)
 data7=pd.DataFrame(time_listNew1)
 data6.columns=['Date']
@@ -117,8 +120,29 @@ df3=df3.join(data7)
 df3['Date'] = pd.to_datetime(df3['Date'], format='%Y-%m-%d')
 df3['Date'] = df3['Date'].dt.date
 #df3['Time']= pd.to_datetime(data['Time'])
+
 df3.drop(['Date and Time'], axis = 1, inplace = True)
-df3=df3.sort_values(by=['Stock Name', 'Time'])
+
+date_list = df3['Date'].values.tolist()
+time_list = df3['Time'].values.tolist()
+timel=[]
+for a in time_list:
+    timel.append(str(a))
+datel=[]
+for a in date_list:
+    datel.append(str(a))
+dtl=[]
+for (a,b) in zip(datel,timel):
+    c=str(a)+" "+str(b)
+    dtl.append(c)
+
+data8=pd.DataFrame(dtl)
+data8.columns=['Date and Time']
+df3=df3.join(data8)
+df3['Date and Time'] = pd.to_datetime(df3['Date and Time'], format='%Y-%m-%d')
+df3.drop(['Date','Time'], axis = 1, inplace = True)
+df3=df3.sort_values(by=['Stock Name', 'Date and Time'])
+
 writer2 = pd.ExcelWriter('Final1.xlsx', engine='openpyxl')
 df3.to_excel(writer2, sheet_name='Sheet1')
 worksheet = writer2.sheets['Sheet1']
