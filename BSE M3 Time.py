@@ -81,7 +81,7 @@ while True:
 df2=pd.read_excel('result.xlsx', sheet_name='Sheet1')
 df2=df2.sort_values(by='Stock Name')
 print(df2)
-writer1 = pd.ExcelWriter('Final.xlsx', engine='openpyxl')
+writer1 = pd.ExcelWriter('Temp.xlsx', engine='openpyxl')
 df2.to_excel(writer1, sheet_name='Sheet1')
 worksheet = writer1.sheets['Sheet1']
 writer1.save()
@@ -143,7 +143,7 @@ df3['Date and Time'] = pd.to_datetime(df3['Date and Time'], format='%Y-%m-%d')
 df3.drop(['Date','Time'], axis = 1, inplace = True)
 df3=df3.sort_values(by=['Stock Name', 'Date and Time'])
 
-writer2 = pd.ExcelWriter('Final1.xlsx', engine='openpyxl')
+writer2 = pd.ExcelWriter('Final.xlsx', engine='openpyxl')
 df3.to_excel(writer2, sheet_name='Sheet1')
 worksheet = writer2.sheets['Sheet1']
 writer2.save()
