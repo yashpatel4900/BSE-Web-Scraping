@@ -144,3 +144,27 @@ writer2 = pd.ExcelWriter('Final.xlsx', engine='openpyxl')
 df6.to_excel(writer2, sheet_name='Sheet1')
 worksheet = writer2.sheets['Sheet1']
 writer2.save()
+
+'''
+
+def color_negative_red(val):
+    li=[]
+    for i, val in enumerate(p_list):
+        if i==0:
+            color= 'black' 
+        elif val < p_list[i-1]:
+            color = 'red'
+        elif val > p_list[i-1]:
+            color = 'green'
+        li.append('color: 'color)
+    return 'color: %s' % color
+    
+
+s=df6.style.applymap(color_negative_red, subset=['BSE Price(₨)'])
+
+writer2 = pd.ExcelWriter('color.xlsx', engine='openpyxl')
+s.to_excel(writer2, sheet_name='Sheet1')
+worksheet = writer2.sheets['Sheet1']
+writer2.save()
+
+'''
