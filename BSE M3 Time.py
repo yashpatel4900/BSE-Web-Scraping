@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Mar 19 14:19:24 2020
+
+@author: india
+"""
+
 
 import requests
 from bs4 import BeautifulSoup
@@ -74,13 +81,12 @@ while True:
     
     counter=counter+1
     
-    time.sleep(1)
-    if(counter==1):
+    time.sleep(180)
+    if(counter==20):
         break    
     
 df2=pd.read_excel('result.xlsx', sheet_name='Sheet1')
 df2=df2.sort_values(by='Stock Name')
-print(df2)
 writer1 = pd.ExcelWriter('Temp.xlsx', engine='openpyxl')
 df2.to_excel(writer1, sheet_name='Sheet1')
 worksheet = writer1.sheets['Sheet1']
@@ -147,4 +153,3 @@ writer2 = pd.ExcelWriter('Final.xlsx', engine='openpyxl')
 df3.to_excel(writer2, sheet_name='Sheet1')
 worksheet = writer2.sheets['Sheet1']
 writer2.save()
-
