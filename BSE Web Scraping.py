@@ -13,6 +13,8 @@ import xlsxwriter
 from openpyxl import load_workbook
 import re
 import time
+import numpy as numpy
+
 
 counter=0
 while True:
@@ -140,31 +142,32 @@ df5['Date and Time'] = pd.to_datetime(df5['Date and Time'], format='%Y-%m-%d')
 df5.drop(['Date','Time'], axis = 1, inplace = True)
 df6=df5.sort_values(by=['Stock Name', 'Date and Time'])
 
-writer2 = pd.ExcelWriter('Final.xlsx', engine='openpyxl')
-df6.to_excel(writer2, sheet_name='Sheet1')
-worksheet = writer2.sheets['Sheet1']
-writer2.save()
+pre=0
 
-'''
-
-def color_negative_red(val):
-    li=[]
-    for i, val in enumerate(p_list):
-        if i==0:
-            color= 'black' 
-        elif val < p_list[i-1]:
-            color = 'red'
-        elif val > p_list[i-1]:
-            color = 'green'
-        li.append('color: 'color)
-    return 'color: %s' % color
+def apply_color(val):
+    global pre
+    color=''
+    if val<pre:
+        if abs(val-pre)*100/val >10:
+            color='black'
+        else:    
+            color='red'
+    elif val>pre:
+        if abs(val-pre)*100/val >10:
+            color='black'
+        else:    
+            color='green'
+    else:
+        color='blue'
+    
+    pre=val
+    return 'color: %s' %color
+        
     
 
-s=df6.style.applymap(color_negative_red, subset=['BSE Price(₨)'])
+s=df6.style.applymap(apply_color, subset=['BSE Price(₨)'])
 
-writer2 = pd.ExcelWriter('color.xlsx', engine='openpyxl')
-s.to_excel(writer2, sheet_name='Sheet1')
-worksheet = writer2.sheets['Sheet1']
-writer2.save()
-
-'''
+writer = pd.ExcelWriter('Final.xlsx', engine='openpyxl')
+s.to_excel(writer, index=False,  sheet_name='Sheet1')
+worksheet = writer.sheets['Sheet1']
+writer.save()
