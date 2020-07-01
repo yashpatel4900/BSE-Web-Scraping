@@ -14,7 +14,10 @@ from openpyxl import load_workbook
 import re
 import time
 import numpy as numpy
+<<<<<<< HEAD
 import matplotlib.pyplot as plt
+=======
+>>>>>>> 604ae63c0f1158be9344eefab2d198fffc42770f
 
 
 counter=0
@@ -89,6 +92,7 @@ while True:
         break    
     
 df2=pd.read_excel('result.xlsx', sheet_name='Sheet1')
+<<<<<<< HEAD
 
 from datetime import datetime, date
 date_list = df2['Date and Time'].values.tolist()
@@ -186,4 +190,88 @@ for i in range(0,len(df6),len(df6)//30):
     axes.set_ylabel('Price')
     axes.legend()
     fig.savefig('%s.' %df6['Stock Name'][i],dpi=300,bbox_inches='tight')
+=======
+>>>>>>> 604ae63c0f1158be9344eefab2d198fffc42770f
 
+from datetime import datetime, date
+date_list = df2['Date and Time'].values.tolist()
+date_listNew=[]
+date_listNew1=[]
+for a in date_list:
+    date_listNew.append(a[0:6]+str(" 20"))
+    
+for a in date_listNew:
+    date_object = datetime.strptime(a, '%b %d %y').date()
+    date_listNew1.append(date_object)
+    
+time_list = df2['Date and Time'].values.tolist()
+time_listNew=[]
+time_listNew1=[]
+for a in time_list:
+    time_listNew.append(a[7:])
+    
+for a in time_listNew:
+    time_object = datetime.strptime(a, '%I:%M:%S %p').time()
+    time_listNew1.append(time_object)
+    
+data6=pd.DataFrame(date_listNew1)
+data7=pd.DataFrame(time_listNew1)
+data6.columns=['Date']
+data7.columns=['Time']
+df3=df2.join(data6)
+df4=df3.join(data7)
+df4['Date'] = pd.to_datetime(df4['Date'], format='%Y-%m-%d')
+df4['Date'] = df4['Date'].dt.date
+#df3['Time']= pd.to_datetime(data['Time'])
+
+df4.drop(['Date and Time'], axis = 1, inplace = True)
+
+date_list = df4['Date'].values.tolist()
+time_list = df4['Time'].values.tolist()
+timel=[]
+for a in time_list:
+    timel.append(str(a))
+datel=[]
+for a in date_list:
+    datel.append(str(a))
+dtl=[]
+for (a,b) in zip(datel,timel):
+    c=str(a)+" "+str(b)
+    dtl.append(c)
+
+data8=pd.DataFrame(dtl)
+data8.columns=['Date and Time']
+df5=df4.join(data8)
+df5['Date and Time'] = pd.to_datetime(df5['Date and Time'], format='%Y-%m-%d')
+df5.drop(['Date','Time'], axis = 1, inplace = True)
+df6=df5.sort_values(by=['Stock Name', 'Date and Time'])
+
+pre=0
+
+def apply_color(val):
+    global pre
+    color=''
+    if val<pre:
+        if abs(val-pre)*100/val >10:
+            color='black'
+        else:    
+            color='red'
+    elif val>pre:
+        if abs(val-pre)*100/val >10:
+            color='black'
+        else:    
+            color='green'
+    else:
+        color='blue'
+    
+    pre=val
+    return 'color: %s' %color
+        
+    
+
+s=df6.style.applymap(apply_color, subset=['BSE Price(₨)'])
+
+writer = pd.ExcelWriter('Final.xlsx', engine='openpyxl')
+s.to_excel(writer, index=False,  sheet_name='Sheet1')
+worksheet = writer.sheets['Sheet1']
+writer.save()
