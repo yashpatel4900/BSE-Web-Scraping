@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Mar 19 14:19:24 2020
-
-@author: india
-"""
-
 
 import requests
 from bs4 import BeautifulSoup
@@ -13,9 +6,6 @@ import xlsxwriter
 from openpyxl import load_workbook
 import re
 import time
-import numpy as numpy
-import matplotlib.pyplot as plt
-
 
 counter=0
 while True:
@@ -84,11 +74,17 @@ while True:
     
     counter=counter+1
     
-    time.sleep(180)
-    if(counter==20):
+    time.sleep(1)
+    if(counter==1):
         break    
     
 df2=pd.read_excel('result.xlsx', sheet_name='Sheet1')
+df2=df2.sort_values(by='Stock Name')
+print(df2)
+writer1 = pd.ExcelWriter('Temp.xlsx', engine='openpyxl')
+df2.to_excel(writer1, sheet_name='Sheet1')
+worksheet = writer1.sheets['Sheet1']
+writer1.save()
 
 from datetime import datetime, date
 date_list = df2['Date and Time'].values.tolist()
@@ -111,20 +107,24 @@ for a in time_listNew:
     time_object = datetime.strptime(a, '%I:%M:%S %p').time()
     time_listNew1.append(time_object)
     
+    
+
+
+
 data6=pd.DataFrame(date_listNew1)
 data7=pd.DataFrame(time_listNew1)
 data6.columns=['Date']
 data7.columns=['Time']
 df3=df2.join(data6)
-df4=df3.join(data7)
-df4['Date'] = pd.to_datetime(df4['Date'], format='%Y-%m-%d')
-df4['Date'] = df4['Date'].dt.date
+df3=df3.join(data7)
+df3['Date'] = pd.to_datetime(df3['Date'], format='%Y-%m-%d')
+df3['Date'] = df3['Date'].dt.date
 #df3['Time']= pd.to_datetime(data['Time'])
 
-df4.drop(['Date and Time'], axis = 1, inplace = True)
+df3.drop(['Date and Time'], axis = 1, inplace = True)
 
-date_list = df4['Date'].values.tolist()
-time_list = df4['Time'].values.tolist()
+date_list = df3['Date'].values.tolist()
+time_list = df3['Time'].values.tolist()
 timel=[]
 for a in time_list:
     timel.append(str(a))
@@ -138,52 +138,13 @@ for (a,b) in zip(datel,timel):
 
 data8=pd.DataFrame(dtl)
 data8.columns=['Date and Time']
-df5=df4.join(data8)
-df5['Date and Time'] = pd.to_datetime(df5['Date and Time'], format='%Y-%m-%d')
-df5.drop(['Date','Time'], axis = 1, inplace = True)
-df6=df5.sort_values(by=['Stock Name', 'Date and Time'])
+df3=df3.join(data8)
+df3['Date and Time'] = pd.to_datetime(df3['Date and Time'], format='%Y-%m-%d')
+df3.drop(['Date','Time'], axis = 1, inplace = True)
+df3=df3.sort_values(by=['Stock Name', 'Date and Time'])
 
-pre=0
-
-def apply_color(val):
-    global pre
-    color=''
-    if val<pre:
-        if abs(val-pre)*100/val >10:
-            color='black'
-        else:    
-            color='red'
-    elif val>pre:
-        if abs(val-pre)*100/val >10:
-            color='black'
-        else:    
-            color='green'
-    else:
-        color='blue'
-    
-    pre=val
-    return 'color: %s' %color
-        
-    
-
-s=df6.style.applymap(apply_color, subset=['BSE Price(₨)'])
-
-writer = pd.ExcelWriter('Final.xlsx', engine='openpyxl')
-s.to_excel(writer, index=False,  sheet_name='Sheet1')
-worksheet = writer.sheets['Sheet1']
-writer.save()
-
-df6.reset_index(inplace = True)
-
-for i in range(0,len(df6),len(df6)//30):
-    x=list(df6['Date and Time'][i:i+len(df6)//30])
-    y=list(df6['BSE Price(₨)'][i:i+len(df6)//30])
-    fig=plt.figure()
-    axes=fig.add_axes([.1,.1,1,1])
-    axes.plot_date(x,y,'r-',marker='*',label=df6['Stock Name'][i])
-    axes.set_title('Stock Prices')
-    axes.set_xlabel('Timeline')
-    axes.set_ylabel('Price')
-    axes.legend()
-    fig.savefig('%s.' %df6['Stock Name'][i],dpi=300,bbox_inches='tight')
+writer2 = pd.ExcelWriter('Final.xlsx', engine='openpyxl')
+df3.to_excel(writer2, sheet_name='Sheet1')
+worksheet = writer2.sheets['Sheet1']
+writer2.save()
 

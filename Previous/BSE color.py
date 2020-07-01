@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Mar 19 14:19:24 2020
+Created on Tue Mar 24 15:19:27 2020
 
 @author: india
 """
@@ -14,12 +14,11 @@ from openpyxl import load_workbook
 import re
 import time
 import numpy as numpy
-import matplotlib.pyplot as plt
 
 
 counter=0
 while True:
-    data=['ASIAN PAINTS','AXIS BANK','BAJAJ AUTO','BAJAJ FINANCE','BHARTI AIRTEL','HCL TECHNOLOGIES','HDFC','HDFC BANK','HERO MOTOCORP','HUL','ICICI BANK','INDUSIND BANK','INFOSYS','ITC','KOTAK MAHINDRA BANK','LART','MAHM','MARUTI SUZUKI','NESTLE','NTPC','ONGC','POWER GRID','RELIANCE IND.','SBI','SUN PHARMA','TATA STEEL','TCS','TECH MAHINDRA','TITAN','ULTRATECH CEMENT']
+    data=['ASIAN PAINTS','AXIS BANK','BAJAJ AUTO','BAJAJ FINANCE']
     priceData=[]
     priceDataNew=[]
     foundStockName=[]
@@ -39,7 +38,7 @@ while True:
                 
                 priceData.append(z.split("<")[0])
             foundStockName.append(stockname)
-            datestime.append(datetime.strip()[11:30])
+            datestime.append(datetime.strip()[12:30])
         except:
             print("Data not found for stock " + str(stockname))
         
@@ -84,8 +83,8 @@ while True:
     
     counter=counter+1
     
-    time.sleep(180)
-    if(counter==20):
+    time.sleep(1)
+    if(counter==4):
         break    
     
 df2=pd.read_excel('result.xlsx', sheet_name='Sheet1')
@@ -172,18 +171,3 @@ writer = pd.ExcelWriter('Final.xlsx', engine='openpyxl')
 s.to_excel(writer, index=False,  sheet_name='Sheet1')
 worksheet = writer.sheets['Sheet1']
 writer.save()
-
-df6.reset_index(inplace = True)
-
-for i in range(0,len(df6),len(df6)//30):
-    x=list(df6['Date and Time'][i:i+len(df6)//30])
-    y=list(df6['BSE Price(₨)'][i:i+len(df6)//30])
-    fig=plt.figure()
-    axes=fig.add_axes([.1,.1,1,1])
-    axes.plot_date(x,y,'r-',marker='*',label=df6['Stock Name'][i])
-    axes.set_title('Stock Prices')
-    axes.set_xlabel('Timeline')
-    axes.set_ylabel('Price')
-    axes.legend()
-    fig.savefig('%s.' %df6['Stock Name'][i],dpi=300,bbox_inches='tight')
-
